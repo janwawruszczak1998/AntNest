@@ -3,7 +3,7 @@
 Install necessary packages
 
 ```bash
-sudo apt-get -y install libboost-dev
+sudo apt-get -y install libncurses5-dev
 sudo apt-get -y install cmake
 ```
 
