@@ -1,0 +1,6 @@
+.vscode/
+AntNest
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
