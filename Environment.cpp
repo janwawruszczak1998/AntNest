@@ -4,6 +4,9 @@
 #include <iostream>
 #include "Environment.hpp"
 
+
+extern std::atomic_bool end_flag;
+
 // default environment has no food sources and is dead at all
 Environment::Environment()
 : food_sources(0), insect(0){
@@ -30,7 +33,7 @@ void Environment::run(){
 }
 
 void Environment::environmetn_activity(){
-    std::cout << "end_flag " << end_flag << std::endl;
+
     while(!end_flag){
 
         std::cout << "insects life status: " << insect << std::endl;

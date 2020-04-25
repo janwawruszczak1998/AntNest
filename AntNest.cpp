@@ -4,8 +4,11 @@
 #include <chrono>
 #include <iterator>
 
+#include "Environment.hpp"
 #include "AntNest.hpp"
 #include "Ant.hpp"
+
+extern std::atomic_bool end_flag;
 
 AntNest::AntNest(Environment& environment) : nest_environment(environment), food(3), eggs(3), nest_size_limit(20) {
     std::cout << "Nest created" << std::endl;
@@ -75,7 +78,7 @@ void AntNest::nest_activities(){
     std::normal_distribution<> normal_dist(1, 2);
 
     // randomly nest produces eggs and ants(using eggs), until we have some resources
-    while(food > 0 or eggs > 0 ){
+    while( (food > 0 or eggs > 0)  && !end_flag){
         std::cout << "food: " << food << " eggs: " << eggs << std::endl;
         
 

@@ -5,9 +5,9 @@
 #include "Ant.hpp"
 #include "Environment.hpp"
 
-int main(){
+std::atomic_bool end_flag(false);
 
-    end_flag = false;
+int main(){
 
     std::cout << "end_flag" << end_flag << std::endl;
 
@@ -22,7 +22,7 @@ int main(){
             break;
         }
     }
-
+    std::cout << "!ef!" << end_flag << std::endl;
     environment.get_environment_thread().join();
     ant_nest.get_nest_thread().join();
 

@@ -10,7 +10,7 @@
 #include <algorithm>
 
 
-static std::atomic_bool end_flag;
+
 
 class Environment{
 public:
