@@ -16,17 +16,15 @@ Ant::Ant(const int lt_, AntNest& nest_) : life_time(lt_), nest(nest_)
     std::random_device rd;
     std::mt19937 g(rd());
     std::uniform_int_distribution<> distr(0, 2);
+
     // random job for ant 0 - foodbarer, 1 - warior, 2 - babysitter
     job = static_cast<int>(std::round(distr(g)));
-
-    std::cout << "we have new " << job << std::endl;
     run();
 }
 
 // ant with defined life time and job
 Ant::Ant(const int lt_, const int job_, AntNest& nest_) : life_time(lt_), nest(nest_)
 {
-    std::cout << "we have new " << job << std::endl;
     run();
 }
 
@@ -61,17 +59,32 @@ void Ant::work(){
             }
         }
         life_time -= 100000;
-        std::this_thread::sleep_for(std::chrono::milliseconds(450));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
 void Ant::find_food(){
-    std::cout << "find food" << std::endl;
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::uniform_int_distribution<> distr(0, nest.get_food_source().size() - 1);
+
+    int food_location = static_cast<int>(std::round(distr(g)));
+    if(nest.get_food_source()[food_location] > 0){
+        nest.increment_food(1);
+    }
+
 
 }
+
 void Ant::babysit_eggs(){
-    std::cout << "babysit eggs" << std::endl;
+
 }
+
 void Ant::attack_insect(){
-    std::cout << "attack insect" << std::endl;
+    if(--nest.get_insect() == 0){
+        nest.increment_food(20);
+    }
+    else{
+        if(nest.get_insect() < 0) nest.get_insect() = -1;
+    }
 }

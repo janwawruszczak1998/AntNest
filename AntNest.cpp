@@ -7,7 +7,7 @@
 #include "AntNest.hpp"
 #include "Ant.hpp"
 
-AntNest::AntNest() : food(3), eggs(3), nest_size_limit(15) {
+AntNest::AntNest(Environment& environment) : nest_environment(environment), food(3), eggs(3), nest_size_limit(20) {
     std::cout << "Nest created" << std::endl;
     
     for(int i = 0; i < nest_size_limit; ++i){
@@ -19,13 +19,15 @@ AntNest::AntNest() : food(3), eggs(3), nest_size_limit(15) {
 
 AntNest::~AntNest(){
     ants.clear();
+    std::cout << "Nest destroyed" << std::endl;
 }
 
 std::thread& AntNest::get_nest_thread(){ return nest_life; }
+std::vector<std::unique_ptr<Ant>>& AntNest::get_ants(){ return ants; }
+std::vector<int>& AntNest::get_food_source(){ return nest_environment.get_food_sources(); }
+std::atomic<int>& AntNest::get_insect(){ return nest_environment.get_insect(); } 
 
 void AntNest::produce_ant(int ant_life_time){
-    std::cout << "make ant" << std::endl;
-
     if(eggs > 0){
         --eggs;
         std::vector<std::unique_ptr<Ant> >::iterator dead_ant = 
@@ -43,7 +45,6 @@ void AntNest::produce_ant(int ant_life_time){
 }
 
 void AntNest::produce_egg(){
-    std::cout << "produce egg" << std::endl;
     if( !food > 0 ) {
         std::this_thread::sleep_for(std::chrono::milliseconds(900)); 
         return;
@@ -58,7 +59,7 @@ void AntNest::produce_egg(){
         eggs++;
     }
    
-    std::this_thread::sleep_for(std::chrono::milliseconds(900)); 
+    std::this_thread::sleep_for(std::chrono::milliseconds(200)); 
 }
 
 void AntNest::run(){

@@ -8,8 +8,8 @@ class AntNest;
 
 class Ant{
 public:
-    Ant();          // default ant is dead worker
-    Ant(const int, AntNest&);       // lifetime as atribute, random job
+    Ant();          // default ant is dead worker without nest
+    Ant(const int,AntNest&);       // lifetime as atribute, random job
     Ant(const int, const int, AntNest&);  // lifetime and job as atribute
 
 
