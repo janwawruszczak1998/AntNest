@@ -8,7 +8,7 @@ find_package(Threads REQUIRED)
 
 
 
-add_executable(AntNest main.cpp AntNest.hpp AntNest.cpp Ant.hpp Ant.cpp)
+add_executable(AntNest main.cpp AntNest.hpp AntNest.cpp Ant.hpp Ant.cpp Environment.hpp Environment.cpp)
 
 target_link_directories(AntNest PUBLIC
         "$(PROJECT_BINARY_DIR)"
