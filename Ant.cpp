@@ -5,9 +5,13 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 #include "Ant.hpp"
 #include "AntNest.hpp"
+
+extern std::mutex ant_mutex;
+extern std::mutex insect_mutex;
 
 // ant with defined life time and random job
 Ant::Ant(const int lt_, AntNest& nest_) : life_time(lt_), nest(nest_)
@@ -69,6 +73,9 @@ void Ant::find_food(){
     std::uniform_int_distribution<> distr(0, nest.get_food_source().size() - 1);
 
     int food_location = static_cast<int>(std::round(distr(g)));
+
+    const std::lock_guard<std::mutex> lock(ant_mutex);
+
     if(nest.get_food_source()[food_location] > 0){
         nest.increment_food(1);
     }
@@ -81,6 +88,8 @@ void Ant::babysit_eggs(){
 }
 
 void Ant::attack_insect(){
+
+    const std::lock_guard<std::mutex> lock(insect_mutex);
     if(--nest.get_insect() == 0){
         nest.increment_food(20);
     }

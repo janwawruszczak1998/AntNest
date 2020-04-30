@@ -2,10 +2,13 @@
 #include <vector>
 #include <thread>
 #include <iostream>
+#include <mutex>
 #include "Environment.hpp"
 
 
 extern std::atomic_bool end_flag;
+extern std::mutex food_mutex;
+extern std::mutex insect_mutex;
 
 // default environment has no food sources and is dead at all
 Environment::Environment()
@@ -35,8 +38,8 @@ void Environment::run(){
 void Environment::environmetn_activity(){
 
     while(!end_flag){
-
-        std::cout << "insects life status: " << insect << std::endl;
+        std::cout << "Environment resources status: " << std::endl <<
+                        "insects life status: " << insect << std::endl;
         for(int i = 0; i < food_sources.size(); ++i){
             std::cout << "[" <<i << ": " << food_sources[i] << "]";
         }
@@ -50,6 +53,7 @@ void Environment::environmetn_activity(){
             std::uniform_int_distribution<> distr(1, 5);    // adding 1-5 food
 
             int additional_food = static_cast<int>(std::round(distr(g)));
+            const std::lock_guard<std::mutex> lock(food_mutex);
             actual_food = actual_food + additional_food ? actual_food + additional_food : 1e9;
         };
 

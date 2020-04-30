@@ -17,11 +17,11 @@ class Environment;
 
 class AntNest{
 public:
-    AntNest(Environment& environment);
+    AntNest(int, Environment&);
     ~AntNest();
 
 
-    void produce_ant(int life_time);
+    void produce_ant(int);
     void increment_food(int);
 
     void produce_egg();
@@ -36,6 +36,7 @@ public:
     std::atomic<int>& get_insect();
 
 private:
+    int nest_id;
     int food;
     int eggs;
     std::vector<std::unique_ptr<Ant> > ants;
