@@ -16,7 +16,11 @@ std::mutex ant_mutex;
 std::mutex insect_mutex;
 std::mutex food_mutex;
 
-NC2DArray board(25, 100);
+
+const int WINDOW_X = 0, WINDOW_Y = 0, WINDOW_HEIGHT = 200, WINDOW_WIDTH = 200,
+            BOARD_WIDTH = 25, BOARD_HEIGHT = 100;
+
+NC2DArray board(BOARD_WIDTH, BOARD_HEIGHT);
 
 void draw(SimulationWindow* window) {
     while(!end_flag){
@@ -33,6 +37,7 @@ int main(){
     
 
     std::cout << "Poczekaj, az pozostale watki sie zakoncza" << std::endl;
+
     Environment environment(10);
     AntNest ant_nest1(1, environment);
     AntNest ant_nest2(2, environment);
