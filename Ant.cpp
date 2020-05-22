@@ -35,7 +35,6 @@ Ant::Ant(const int lt_, const int job_, AntNest& nest_) : life_time(lt_), nest(n
 
 
 Ant::~Ant(){
-    //nest.reset();
 }
 
 // getters

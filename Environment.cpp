@@ -38,13 +38,6 @@ void Environment::run(){
 void Environment::environmetn_activity(){
 
     while(!end_flag){
-        std::cout << "Environment resources status: " << std::endl <<
-                        "insects life status: " << insect << std::endl;
-        for(int i = 0; i < food_sources.size(); ++i){
-            std::cout << "[" <<i << ": " << food_sources[i] << "]";
-        }
-        std::cout << std::endl;
-
 
         auto add_food = [](int& actual_food){
             // tool for randomness

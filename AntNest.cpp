@@ -8,22 +8,22 @@
 #include "AntNest.hpp"
 #include "Ant.hpp"
 
+
+const int LIFE_TIME = 1000000;
+
 extern std::atomic_bool end_flag;
 
 AntNest::AntNest(int id, Environment& environment) 
 : nest_id(id), nest_environment(environment), food(3), eggs(3), nest_size_limit(20) {
-    std::cout << "Nest created" << std::endl;
     
     for(int i = 0; i < nest_size_limit; ++i){
-        ants.push_back(std::make_unique<Ant>(1000000, *this));
+        ants.push_back(std::make_unique<Ant>(LIFE_TIME, *this));
     }
 
     this->run();
 }
 
 AntNest::~AntNest(){
-    ants.clear();
-    std::cout << "Nest destroyed" << std::endl;
 }
 
 std::thread& AntNest::get_nest_thread(){ return nest_life; }
@@ -40,7 +40,7 @@ void AntNest::produce_ant(int ant_life_time){
 
         if(dead_ant != ants.end()){
             dead_ant->get()->get_thread().join();
-            dead_ant->get()->get_life_time() = 1000000;
+            dead_ant->get()->get_life_time() = LIFE_TIME;
             dead_ant->get()->run();
         }
         
@@ -80,12 +80,10 @@ void AntNest::nest_activities(){
 
     // randomly nest produces eggs and ants(using eggs), until we have some resources
     while( (food > 0 or eggs > 0)  && !end_flag){
-        std::cout << "nest_id: " << nest_id << std::endl <<
-                     "food: " << food << " eggs: " << eggs << std::endl;
         
 
         if( static_cast<int>(std::round(normal_dist(g))) % 2 == 0){
-            produce_ant(1000000); 
+            produce_ant(LIFE_TIME); 
         }
         else{
             produce_egg();
