@@ -34,6 +34,9 @@ public:
     std::vector<std::unique_ptr<Ant>>& get_ants();
     std::vector<int>& get_food_source();
     std::atomic<int>& get_insect();
+    int get_id();
+    std::pair<int, int> get_nest_coord();
+    Environment& get_environment();
 
 private:
     int nest_id;
@@ -43,7 +46,8 @@ private:
     std::thread nest_life;
     Environment& nest_environment;
 
-    int nest_size_limit;
+    std::pair<int, int> nest_coord;
+    const int nest_size_limit;
 };
 
 #endif

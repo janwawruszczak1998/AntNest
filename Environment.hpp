@@ -25,11 +25,13 @@ public:
     std::atomic<int>& get_insect();
     std::vector<int>& get_food_sources();
     std::thread& get_environment_thread();
+    std::pair<int, int> get_insect_coord();
 
 private:
     std::vector<int> food_sources;
     std::atomic<int> insect;
     std::thread environment_thread;
+    std::pair<int, int> insect_coord;
 
 };
 

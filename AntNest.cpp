@@ -7,18 +7,30 @@
 #include "Environment.hpp"
 #include "AntNest.hpp"
 #include "Ant.hpp"
+#include "ncursesEngine/NC2DArray.hpp"
 
 
 const int LIFE_TIME = 1000000;
+const int NEST_SIZE = 100;
 
 extern std::atomic_bool end_flag;
+extern NC2DArray board;
 
 AntNest::AntNest(int id, Environment& environment) 
-: nest_id(id), nest_environment(environment), food(3), eggs(3), nest_size_limit(20) {
-    
+: nest_id(id), nest_environment(environment), food(3), eggs(3), nest_size_limit(NEST_SIZE) {
+
+    if(id == 1){
+        nest_coord = std::make_pair(3,3);
+    }
+    else{
+        nest_coord = std::make_pair(board.height()-3, board.width()-1);
+    }
+
     for(int i = 0; i < nest_size_limit; ++i){
         ants.push_back(std::make_unique<Ant>(LIFE_TIME, *this));
     }
+
+    
 
     this->run();
 }
@@ -30,6 +42,10 @@ std::thread& AntNest::get_nest_thread(){ return nest_life; }
 std::vector<std::unique_ptr<Ant>>& AntNest::get_ants(){ return ants; }
 std::vector<int>& AntNest::get_food_source(){ return nest_environment.get_food_sources(); }
 std::atomic<int>& AntNest::get_insect(){ return nest_environment.get_insect(); } 
+Environment& AntNest::get_environment(){ return nest_environment; }
+int AntNest::get_id(){ return nest_id; }
+std::pair<int, int> AntNest::get_nest_coord(){ return nest_coord; }
+
 
 void AntNest::produce_ant(int ant_life_time){
     if(eggs > 0){
@@ -45,25 +61,20 @@ void AntNest::produce_ant(int ant_life_time){
         }
         
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(200)); 
 }
 
 void AntNest::produce_egg(){
     if( !food > 0 ) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(900)); 
         return;
     }
-
-    food--;
 
     // if we have baby_sitter that is alive we are not dead yet
     if(std::any_of(ants.begin(), ants.end(), [](std::unique_ptr<Ant>& ant){ return ant->get_life_time() > 0; } )
         && std::any_of(ants.begin(), ants.end(), [](std::unique_ptr<Ant>& ant){ return ant->get_job() == 2; } ) ) {
-        
+        food--;
         eggs++;
     }
    
-    std::this_thread::sleep_for(std::chrono::milliseconds(200)); 
 }
 
 void AntNest::run(){
@@ -110,3 +121,4 @@ void AntNest::increment_food(int food_delivered){
 void AntNest::increment_egg(){
     eggs++;
 }
+

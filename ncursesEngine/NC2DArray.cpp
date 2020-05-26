@@ -3,7 +3,7 @@
 NC2DArray::NC2DArray ( int width, int height ) 
 : array(width) {
 	for (int i = 0; i < width; ++i){
-		array[i].resize(height, '-');
+		array[i].resize(height, ' ');
     }
 }
 

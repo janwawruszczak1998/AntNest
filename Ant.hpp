@@ -33,6 +33,7 @@ private:
     int job;
     std::thread ant_thread;
     AntNest& nest;
+    std::pair<int, int> ant_coord;
 };
 
 #endif
