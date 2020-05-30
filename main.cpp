@@ -11,10 +11,9 @@
 #include "ncursesEngine/SimulationWindow.hpp"
 #include "ncursesEngine/NC2DArray.hpp"
 
-std::atomic_bool end_flag;
-std::mutex ant_mutex;
-std::mutex insect_mutex;
-std::mutex food_mutex;
+std::atomic_bool end_flag, empty_entrance;
+std::mutex ant_mutex, insect_mutex, food_mutex, entrance_mutex;
+
 
 
 const int WINDOW_X = 0, WINDOW_Y = 0, WINDOW_HEIGHT = 25, WINDOW_WIDTH = 100,

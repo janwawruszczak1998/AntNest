@@ -7,6 +7,7 @@
 #include <chrono>
 #include <mutex>
 #include <algorithm>
+#include <condition_variable>
 
 #include "Ant.hpp"
 #include "AntNest.hpp"
@@ -14,9 +15,11 @@
 
 extern std::mutex ant_mutex;
 extern std::mutex insect_mutex;
+extern std::mutex entrance_mutex;
 extern NC2DArray board;
-extern std::atomic_bool end_flag;
+extern std::atomic_bool end_flag, empty_entrance;
 
+std::condition_variable entrance_cv;
 
 
 // ant with defined life time and random job
@@ -87,41 +90,69 @@ void Ant::find_food(){
         y = static_cast<int>(std::round(coord_distr(g))) % board.width();
     std::pair<int, int> food_coord(x,y);
 
+
+
     if(board.at(ant_coord.first, ant_coord.second) != 'O'){
         board.set(food_coord.first, food_coord.second, '.');
     }
     
+    std::unique_lock<std::mutex> entrance_lock(entrance_mutex);
+    entrance_cv.wait(entrance_lock, [](){ return &empty_entrance; });
+    empty_entrance = false;
+    {
+        board.set(ant_coord.first, ant_coord.second, '^');
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
+    empty_entrance = true;
+    entrance_lock.unlock();
+    entrance_cv.notify_one();
 
     
     while(food_coord != ant_coord){
-        if(board.at(ant_coord.first, ant_coord.second) != 'O'){
+        if(board.at(ant_coord.first, ant_coord.second) != 'O' and ant_coord != nest.get_nest_coord() ){
             board.set(ant_coord.first, ant_coord.second, ' ');
         }
         
         food_coord.first > ant_coord.first ? ant_coord.first++ : food_coord.first == ant_coord.first ? : ant_coord.first--;
         food_coord.second > ant_coord.second ? ant_coord.second++ : food_coord.second == ant_coord.second ? : ant_coord.second--;
 
-        if(board.at(ant_coord.first, ant_coord.second) != 'O'){
+        if(board.at(ant_coord.first, ant_coord.second) != 'O' and ant_coord != nest.get_nest_coord() ){
             board.set(ant_coord.first, ant_coord.second, '-');
         }
-        
-
+    
         std::this_thread::sleep_for(std::chrono::milliseconds(25));
     }
     
-    std::unique_lock<std::mutex> lock(ant_mutex);
+    std::unique_lock<std::mutex> food_lock(ant_mutex);
     if(nest.get_food_source()[food_location] > 0){
         nest.increment_food(1);
     }
-    lock.unlock();
+    food_lock.unlock();
     
     while(nest.get_nest_coord() != ant_coord){
-        board.set(ant_coord.first, ant_coord.second, ' ');
+        if(board.at(ant_coord.first, ant_coord.second) != 'O' and ant_coord != nest.get_nest_coord() ){
+            board.set(ant_coord.first, ant_coord.second, ' ');
+        }
+
         nest.get_nest_coord().first > ant_coord.first ? ant_coord.first++ : nest.get_nest_coord().first == ant_coord.first ? : ant_coord.first--;
         nest.get_nest_coord().second > ant_coord.second ? ant_coord.second++ : nest.get_nest_coord().second == ant_coord.second ? : ant_coord.second--;
-        board.set(ant_coord.first, ant_coord.second, '-');
-        std::this_thread::sleep_for(std::chrono::milliseconds(15));
+        
+        if(board.at(ant_coord.first, ant_coord.second) != 'O' and ant_coord != nest.get_nest_coord() ){
+            board.set(ant_coord.first, ant_coord.second, '-');
+        }        std::this_thread::sleep_for(std::chrono::milliseconds(15));
     }
+
+    entrance_lock.lock();
+    entrance_cv.wait(entrance_lock, [](){ return &empty_entrance; });
+    empty_entrance = false;
+    {
+        board.set(ant_coord.first, ant_coord.second, '^');
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+    empty_entrance = true;
+    entrance_lock.unlock();
+    entrance_cv.notify_one();
+
 
 }
 

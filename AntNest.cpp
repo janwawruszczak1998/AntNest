@@ -23,7 +23,7 @@ AntNest::AntNest(int id, Environment& environment)
         nest_coord = std::make_pair(3,3);
     }
     else{
-        nest_coord = std::make_pair(board.height()-3, board.width()-1);
+        nest_coord = std::make_pair(board.height()-4, board.width()-1);
     }
 
     for(int i = 0; i < nest_size_limit; ++i){
