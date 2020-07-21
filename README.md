@@ -24,3 +24,8 @@ It is simple multithreading program, where we can observe 2 antnests. Small ants
 ### Why is that?
 
 I wanted to learn something about multithreading in C++. And I like ants :)
+
+Possible view in VSCode, but ants run there, trust me!
+
+![image of simulation frame]
+(https://github.com/janwawruszczak1998/AntNest/blob/master/ants_running.png)
