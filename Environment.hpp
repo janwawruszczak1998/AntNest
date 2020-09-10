@@ -10,21 +10,22 @@
 #include <algorithm>
 
 
-
-
-class Environment{
+class Environment {
 public:
-    Environment();    
     Environment(const int);
 
     ~Environment();
 
     void run();
-    void environmetn_activity();
 
-    std::atomic<int>& get_insect();
-    std::vector<int>& get_food_sources();
-    std::thread& get_environment_thread();
+    void environment_activity();
+
+    std::atomic<int> &get_insect();
+
+    std::vector<int> &get_food_sources();
+
+    std::thread &get_environment_thread();
+
     std::pair<int, int> get_insect_coord();
 
 private:
